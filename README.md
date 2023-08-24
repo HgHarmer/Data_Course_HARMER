@@ -1,1 +1,3 @@
-# Data_Course_HARMER
+# Data_Course_HARMERThis README file contains information about my uploaded assignments
+This README file contains information about my uploaded assignments
+This README file contains information about my uploaded assignments
