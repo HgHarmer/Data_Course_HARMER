@@ -1,24 +1,35 @@
 #assignment 2
 
 list.files(path = "Data", pattern = 'csv')
-cvs_files <- list.files('Data', pattern = 'csv')
+cvs_files <- list.files('Data', 
+                        pattern = 'csv',
+                        full.names = TRUE)
 length(cvs_files)
+
 read.csv('./data/wingspan_vs_mass.csv')
+
 df <- read.csv('./data/wingspan_vs_mass.csv')
+
 head(df,n=5)
+
 list.files(path='Data',
            pattern = "^b",#'^' means starts with
-           recursive = TRUE,)
+           recursive = TRUE,
+           full.names = TRUE)
 #Write a command that displays the first line of each of 
 #those “b” files (this is tricky… use a for-loop)
+
 bfiles <- list.files(path='Data',
                      pattern = "^b",
-                     recursive = TRUE,)
-setwd("./Data")
-for (x in bfiles) {print(head(read.csv(x),n=1))}
-setwd("..")
+                     recursive = TRUE,
+                     full.names = TRUE)
 
 
+for (x in bfiles) {print(readLines(x,n=1))}
+
+#Do the same thing for all files that end in “.csv”
+
+for (x in cvs_files) {print(readLines(x,n=1))}
 
 
 ##############################################################
@@ -26,7 +37,8 @@ setwd("..")
 ?startsWith
 ?list.files( )
 getwd()
-#####################tests####################################3
+?readLines()
+#####################tests####################################
 bfiles
 
 
@@ -61,3 +73,8 @@ list.files(path='.',
            recursive = TRUE,)
 setwd("./Data")
 bfiles
+for (x in 1:5) {print(x*5)}
+  
+
+
+
