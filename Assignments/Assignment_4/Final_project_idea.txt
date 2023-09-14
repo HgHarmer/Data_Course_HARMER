@@ -1,0 +1,12 @@
+analyze the 'alien mummy' genome and try to compile an actual 'alien' genome based on the 3 samples given with all human contamination removed, or prove that it's bullshit (the more likely option).
+
+NHI has all 3 genomes available and BLAST can be used to try and remove any human DNA contamination.
+
+
+https://trace.ncbi.nlm.nih.gov/Traces/?view=run_browser&page=3&page_size=10&acc=SRR21031366&display=reads
+
+https://trace.ncbi.nlm.nih.gov/Traces/?view=run_browser&page_size=10&acc=SRR20755928&display=reads
+
+https://trace.ncbi.nlm.nih.gov/Traces/?view=run_browser&page_size=10&acc=SRR20458000&display=reads
+
+there will probably be a few ways to visualize the data but one way to ensure that I have some data to work with would be to compare human-contaminated DNA against unknown origin DNA
