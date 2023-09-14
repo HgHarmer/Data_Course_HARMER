@@ -26,7 +26,8 @@ ggplot(A_States, aes(x=as_date(Last_Update),
   theme(axis.text.x = element_text(angle = 90,
                                    vjust = 0.1,
                                    hjust=1,
-                                   size = 6))
+                                   size = 6))+
+  ggtitle('Deaths in States That Start With A')
 
 #IV. (Back to the full dataset) Find the “peak” of Case_Fatality_Ratio ####
 #for each state and save this as a new data frame object 
@@ -85,7 +86,8 @@ ggplot(data = state_max_fatality_rate,
 theme(axis.text.x = element_text(angle = 90,
                                    vjust = 0.1,
                                    hjust=1,
-                                   size = 6))
+                                   size = 6))+
+  ggtitle('Max Fatality Ratio By State')
 
 
 
@@ -94,13 +96,13 @@ theme(axis.text.x = element_text(angle = 90,
 #You’ll need to read ahead a bit and use the dplyr package functions 
 #group_by()and summarize() to accomplish this.####
 
-dat_2 <- dat %>%
+dat_CD <- dat %>%
   group_by(Last_Update) %>%
   summarise(
     cumulitive_deaths = sum(Deaths, na.rm = TRUE))
  
 
-ggplot(data = dat_2,
+ggplot(data = dat_CD,
        aes(x=as.Date(Last_Update),
            y=cumulitive_deaths))+
   geom_point(size=.1)+
