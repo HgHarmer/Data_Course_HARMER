@@ -84,8 +84,8 @@ names(state_max_fatality_rate)[2] <- paste('Maximum_Fatality_Ratio')
 
 
 ggplot(data = state_max_fatality_rate,
-       aes(x=reorder(state_max_fatality_rate$Province_State,-state_max_fatality_rate$Maximum_Fatality_Ratio),
-       y=state_max_fatality_rate$Maximum_Fatality_Ratio,
+       aes(x=reorder(Province_State,-Maximum_Fatality_Ratio),
+       y=Maximum_Fatality_Ratio,
        las=2))+
   geom_bar(stat='identity')+
   xlab('State or Province')+
