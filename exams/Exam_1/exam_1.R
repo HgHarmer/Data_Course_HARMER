@@ -21,7 +21,9 @@ ggplot(A_States, aes(x=as_date(Last_Update),
   facet_wrap(~Province_State,
              scales = 'free' )+
   geom_smooth(se=FALSE,
-              color= 'black')+
+              color= 'black',
+              method = loess,
+              formula = y~x)+
   xlab('Date')+
   theme(axis.text.x = element_text(angle = 90,
                                    vjust = 0.1,
@@ -119,4 +121,3 @@ theme(axis.text.x = element_text(angle = 90,
                                  hjust=1,
                                  size = 6))+
   ggtitle('Cumulative Deaths from Covid-19')
- 
