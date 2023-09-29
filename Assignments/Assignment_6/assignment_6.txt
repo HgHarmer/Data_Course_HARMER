@@ -8,7 +8,7 @@ read_csv("../../Data/BioLog_Plate_Data.csv")
 #2 time and absorption are variables and should have their own columns, likewise each observation time is an observation so should be in a row.
 #3 hours are recorded as hr_ this is a character vector and will need to made numeric
 #4 add new column that records if a sample was taken from water or soil
-#5 the 'well' column should also be split into well_row and well_column as these can be seen as separate observations
+#5 the well column should also be split into well_row and well_column as these can be seen as separate observations
 
  
 dat_clean<- read_csv("../../Data/BioLog_Plate_Data.csv") %>% 
@@ -58,21 +58,3 @@ dat_clean<- read_csv("../../Data/BioLog_Plate_Data.csv") %>%
     transition_reveal(Time_hr)
 ####################################################################################  
  
-
-   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
