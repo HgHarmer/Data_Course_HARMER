@@ -106,3 +106,18 @@ df <- df%>%
 
 
 
+
+#old way I did assignment 6 part 1
+
+dat_clean<- 
+  dat %>% 
+  mutate(Sample_Type=ifelse(grepl('^S',dat$`Sample ID`),
+                            'Soil','water'))%>%  
+  rename('24'=Hr_24,
+         '48'=Hr_48,
+         '144'=Hr_144,
+         Sample_ID=`Sample ID`) %>% 
+  pivot_longer(c('24','48','144'),
+               names_to = 'Time_hr',
+               values_to ='Absorbance') %>% 
+  mutate(Time_hr=as.numeric(Time_hr))  

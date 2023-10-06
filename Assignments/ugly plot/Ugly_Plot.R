@@ -125,7 +125,8 @@ set.seed(15)#just right
    annotate('text',x=skin_color,
           y=mass-50,
           label="theres a poin here",
-          angle=42,size=mass/sample(c(25:100),1),
+          angle=42,
+          size=mass/sample(c(25:100),1),
           color='#Fffda0')+
  geom_image(aes(x="orange",
                   y=66,image='jar_2.png' ,size=10,), size=.1)+  
