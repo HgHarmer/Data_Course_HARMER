@@ -1,3 +1,5 @@
+
+library(skimr)
 library(tidyverse)
 library(gganimate)
 library(janitor)
@@ -58,8 +60,23 @@ dat_clean<- read_csv("../../Data/BioLog_Plate_Data.csv") %>%
     transition_reveal(Time_hr)
 ####################################################################################  
  
-
-   
+#shown in class
+ df <-   read_csv("../../Data/BioLog_Plate_Data.csv") %>% 
+    clean_names() %>%
+    pivot_longer(starts_with('hr_'),
+                 names_to = 'hour',
+                 values_to = 'abs',
+                 names_prefix = 'hr_',
+                 names_transform = as.numeric) %>% 
+    mutate(type=case_when(sample_id=='soil_1'~'soil',
+                     sample_id=='soil_2'~'soil',
+                     sample_id=='Clear_Creek'~'water',
+                     sample_id=='Waste_Water'~'water'))
+  
+  df %>% 
+    filter(dilution==.1) %>% 
+    
+  
   
   
   

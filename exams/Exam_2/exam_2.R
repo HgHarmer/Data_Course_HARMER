@@ -1,0 +1,119 @@
+library(tidyverse)
+library(janitor)
+library(modelr)
+#1. Read in the unicef data
+#2. Get it into tidy format
+U5MR <- read.csv('./unicef-u5mr.csv') %>% 
+  clean_names() %>% 
+  pivot_longer(-c(country_name,continent,region),
+               names_to = 'year',
+               values_to = 'u5mr') %>% 
+  mutate(year=year %>% str_remove('u5mr_')%>% as.numeric())
+
+
+#3. Plot each country’s U5MR over time 
+U5MR %>% 
+  ggplot(aes(x=year,y=u5mr,color=country_name))+
+  facet_wrap(vars(continent))+
+  geom_line()+
+  theme(legend.position = 'none')
+#4.Save this plot as LASTNAME_Plot_1.png (5 pts)
+
+ggsave('HARMER_Plot_1.png')
+
+#5. Create another plot that shows the mean U5MR for all the countries within a given continent at each year (20 pts)
+U5MR %>% 
+  group_by(continent,year) %>% 
+  summarise(mean_u5mr=mean(u5mr,na.rm = TRUE)) %>% 
+  ggplot(aes(year,mean_u5mr,color= continent))+
+  geom_line(size=2)+
+  theme_minimal()
+#6. Save that plot as LASTNAME_Plot_2.png
+
+ggsave('HARMER_Plot_2.png')
+
+#7. Create three models of U5MR
+
+m1 <- glm(data = U5MR,
+    formula =u5mr~year)
+
+m2 <- glm(data = U5MR,
+    formula =u5mr~year+continent)
+
+m3 <- glm(data = U5MR,
+    formula =u5mr~year*continent)
+
+preds <- add_predictions(U5MR,m1) %>% 
+  rename(m1=pred) %>% 
+  add_predictions(m2) %>%
+  rename(m2=pred) %>% 
+  add_predictions(m3) %>% 
+  rename(m3=pred) %>% 
+  pivot_longer(c(m1,m2,m3),
+               names_to = 'model',
+               values_to = 'prediction') 
+#8. Compare the three models with respect to their performance
+
+summary(m1)
+
+summary(m2)
+
+summary(m3)
+
+
+#9 Plot the 3 models’ predictions
+ preds %>% 
+  ggplot(aes(x=year,y=prediction,color=continent))+
+  geom_line(size=1.5)+
+  facet_wrap(vars(model))
+
+ ggsave('HARMER_Plot_3.png')
+#10 Using your preferred model,predict what the U5MR would be for Ecuador in the year 2020. 
+#The real value for Ecuador for 2020 was 13 under-5 deaths per 1000 live births. 
+#How far off was your model prediction???
+
+#10 a. prediction given for Americas by model 3
+ predict.glm(object = m3,data.frame(year=2020,continent='Americas'))
+#the model prediction given was -10.58018 
+#this value is 23.58018 away from the real value
+#10 b. a look at Ecuador's U5MR 
+ U5MR %>% 
+   filter(country_name=='Ecuador') %>% 
+   ggplot(aes(year,u5mr))+
+   geom_line()
+#it looks like it's mostly linear from 1950-1990 but the trend slows after that 
+U5MR %>% 
+  filter(region=='South America') %>% 
+   ggplot(aes(x=year,y=u5mr,color=country_name))+
+   geom_line()+
+   theme(legend.position = 'none')
+# this trend seems to more or less match the rest of south america, 
+# a better model may only take into account south america from 2000 onward. 
+
+u5mr2000<- U5MR %>% 
+  filter(year>=2000)
+
+ m4 <- glm(data = u5mr2000,
+           formula =u5mr~year*region)
+ summary(m4)
+ predict.glm(object = m4,data.frame(year=2020,region='South America'))
+ # this gives a prediction of 14.38854, just 1.38854 off from reality
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
