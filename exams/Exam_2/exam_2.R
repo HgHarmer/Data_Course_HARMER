@@ -13,7 +13,6 @@ U5MR <- read.csv('./unicef-u5mr.csv') %>%
                values_to = 'u5mr') %>% 
   mutate(year=year %>% str_remove('u5mr_')%>% as.numeric())
 
-clea
 #3. Plot each country’s U5MR over time 
 U5MR %>% 
   ggplot(aes(x=year,y=u5mr,color=country_name))+
@@ -67,7 +66,7 @@ compare_performance(m1,m2,m3) %>%
   geom_line(size=1.5)+
   facet_wrap(vars(model))
 
- ggsave('HARMER_Plot_3.png')
+
 #10 Using your preferred model,predict what the U5MR would be for Ecuador in the year 2020. 
 #The real value for Ecuador for 2020 was 13 under-5 deaths per 1000 live births. 
 #How far off was your model prediction???
