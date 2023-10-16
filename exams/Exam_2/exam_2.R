@@ -1,16 +1,19 @@
 library(tidyverse)
-library(janitor)
+library(easystats)#this package includes the 'insight' package which also has a 'clean_names' function 
 library(modelr)
+library(janitor)
+easystats::easystats_update()
+2
 #1. Read in the unicef data
 #2. Get it into tidy format
 U5MR <- read.csv('./unicef-u5mr.csv') %>% 
-  clean_names() %>% 
+  janitor::clean_names() %>% 
   pivot_longer(-c(country_name,continent,region),
                names_to = 'year',
                values_to = 'u5mr') %>% 
   mutate(year=year %>% str_remove('u5mr_')%>% as.numeric())
 
-
+clea
 #3. Plot each country’s U5MR over time 
 U5MR %>% 
   ggplot(aes(x=year,y=u5mr,color=country_name))+
@@ -54,13 +57,10 @@ preds <- add_predictions(U5MR,m1) %>%
                values_to = 'prediction') 
 #8. Compare the three models with respect to their performance
 
-summary(m1)
-
-summary(m2)
-
-summary(m3)
-
-
+compare_performance(m1,m2,m3)
+compare_performance(m1,m2,m3) %>% 
+  plot
+#model 3 is by far the best model 
 #9 Plot the 3 models’ predictions
  preds %>% 
   ggplot(aes(x=year,y=prediction,color=continent))+
@@ -97,10 +97,14 @@ u5mr2000<- U5MR %>%
            formula =u5mr~year*region)
  summary(m4)
  predict.glm(object = m4,data.frame(year=2020,region='South America'))
+ 
+ 
  # this gives a prediction of 14.38854, just 1.38854 off from reality
  
- 
- 
+ compare_performance(m1,m2,m3,m4)
+ compare_performance(m1,m2,m3,m4) %>% 
+   plot
+# model 4 seems to be a much better for model predicting values after the year 2000 
  
  
  

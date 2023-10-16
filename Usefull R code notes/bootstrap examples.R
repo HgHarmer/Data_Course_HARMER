@@ -1,5 +1,5 @@
 #basic bootstrap with propotions 
-z <- c(rep(0,469),rep(1,31))
+z <- c(rep(0,50),rep(1,70))
 R <- 1000
 reps <- numeric(R)
 
@@ -79,6 +79,8 @@ dat <- boot(z,
      statistic =function(z,i){mean(z[i])},
      R=1000)
 
-
-
-
+dat<- Lock5Data::NutritionStudy
+library(tidyverse)
+dat %>% 
+  filter(VitaminUse=='Regular') %>% 
+  view()
