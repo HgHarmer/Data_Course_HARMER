@@ -104,15 +104,21 @@ u5mr2000<- U5MR %>%
  compare_performance(m1,m2,m3,m4) %>% 
    plot
 # model 4 seems to be a much better for model predicting values after the year 2000 
+
  
+# another option is a logarithmic model 
+ m5 <- glm(data = U5MR,
+     formula =u5mr~log(year)*region)
  
+ 10^predict(m5,data.frame(year=2020, region='South America'))
+ # this gives a value of basically 0, still better than m3 but not nearly as precise as m4
  
- 
- 
- 
- 
- 
- 
+ compare_performance(m1,m2,m3,m5) %>% 
+   plot
+ # the comparison shows that model 5 is much better than 1,2,and 3, but m4 is still generally better at predicting u5mr after 2000 
+ # m5 does seem to have a slightly better r^2 value than m4
+ compare_performance(m1,m2,m3,m4,m5) %>% 
+   plot
  
  
  
