@@ -1,10 +1,13 @@
 
-easystats::easystats_update()
+
 library(tidyverse)
 library(palmerpenguins)
 library(modelr)
 library(easystats)
 library(modelr)
+library(MASS)
+easystats::easystats_update()
+2
 penguins %>% 
   ggplot(aes(y=bill_depth_mm,x=bill_length_mm))+
   geom_point()+
@@ -58,6 +61,10 @@ m5 <- glm(data = mpg, formula = hwy~log(displ))
 
 Titanic %>%  as.data.frame() %>% 
   view
+
+
+
+
 dat <- read.csv('../Data/GradSchool_Admissions.csv')
 dat <- dat %>% 
   mutate(admit=as.logical(admit))
@@ -73,23 +80,83 @@ add_predictions(dat,m6,type = 'response') %>%
   ggplot(aes(x=gpa,y=pred,color=factor(rank)))+
   geom_smooth()
 
+m7<- glm(data = dat,
+         formula = admit~gre*gpa*rank,
+         family = 'binomial')
+
+#finds best model for you
+step<- stepAIC(m6)
+
+step$formula
+
+modbest <- glm(data = df,family = 'binomial',formula = step$formula)
+
+
+penguins %>% 
+  names()
+
+c<- glm(data=penguins,
+            formula = bill_length_mm~island*species* 
+          bill_depth_mm*flipper_length_mm*body_mass_g*
+          sex *year)
+#an easier way to do it
+better<- glm(data=penguins,
+    formula = bill_length_mm~ .^2)
+
+
+best <- stepAIC(better)
+
+best$formula
+
+best_mod <- glm(data = penguins,formula = best$formula)
+
+
+
+#models should be trained on some data and then tested on another set 
 
 
 
 
+penguins<- penguins %>% 
+  mutate(sample=rbinom(nrow(penguins),1,.8))
+
+train <- penguins %>% filter(sample==1)
+
+test <- penguins %>% filter(sample==0)
+
+mod_best <- glm(data = train,
+                formula = best$formula)
+
+predictions<- 
+add_predictions(test,mod_best)
+
+#calculate absolute difference 
+predictions <- 
+predictions %>% 
+  mutate(resid=abs(pred-bill_length_mm))
 
 
+mean(predictions$resid,na.rm = TRUE)
 
+errors <-c()
+for (i in 1:1000) {
+predictions %>% 
+  mutate(resid=abs(pred-bill_length_mm))
+mean_err <- mean(predictions$resid,na.rm = TRUE)
+errors[i] <-mean_err
+}
 
+dat <- data.frame(errors)
 
+ dat %>% 
+ ggplot(aes(x=errors))+
+  geom_density()
 
+install.packages('ranger')
+library(ranger)
 
+r_mod <- ranger(Species~.,data = iris)
 
+pred <- predict(r_mod,iris)
 
-
-
-
-
-
-
-
+data.frame(iris$Species,pred$predictions)

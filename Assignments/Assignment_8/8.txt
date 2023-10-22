@@ -1,0 +1,54 @@
+1 Are any of your predicted response values from your best model scientifically meaningless? Explain.
+
+	the main scientifically meaningless predictions that could come from my model would come from providing my model with a negative value for light, or Nitrogen. Having either negative light or Nitrogen is impossible however, that would not stop my model from giving a prediction based on a negative value.
+ 
+
+`	When it comes to predicting P. cornucopiea's growth rate my model made a number of predictions where the predicted growth rate was negative, I assume the 'growth rate' being measured is the growth rate of the fruiting body of the fungi, if this is the case then the size or mass of the mushroom should start at or near 0 so this model would then be predicting a mushroom with negative mass or size. But even if this 'growth rate' refers to the fungi as a whole then the measurement of the fungi should start from when the media being used is inoculated with spores or mycelium, and if the conditions were harsh enough to cause negative growth then it would just kill the fungi and the growth rate should still just be 0.   
+
+2 In your plots, did you find any non-linear relationships? Do a bit of research online and give a link to at least one resource explaining how to deal with modeling non-linear relationships in R.
+
+yes, nitrogen concentration seemed to have a parabolic relationship with growth rate(though a bell-shaped curve may be a better fit).   
+
+https://stackoverflow.com/questions/13856787/non-linear-regression-analysis-in-r
+
+https://www.datacamp.com/tutorial/introduction-to-non-linear-model-and-insights-using-r
+
+https://stackoverflow.com/questions/3822535/fitting-polynomial-model-to-data-in-r
+(this one helped the most for #3)
+
+3 Write the code you would use to model the data found in “/Data/non_linear_relationship.csv” with a linear model (there are a few ways of doing this)
+
+library(tidyverse)
+library(modelr)
+
+non_lin<- read.csv('../../Data/non_linear_relationship.csv')
+
+
+non_lin %>% 
+  ggplot(aes(x=predictor,y=response))+
+  geom_point()
+
+para1<- glm(data = non_lin,
+           response~poly(predictor,2))
+
+#This model predicts too high for numbers below 1
+
+para2<- glm(data = non_lin,
+    response~I(predictor^2))
+
+#this predicts too low for numbers below 1.5 
+
+preds1<- add_predictions(data = non_lin,model = para1) 
+preds2<- add_predictions(data = non_lin,model = para2)  
+
+preds1 %>% 
+ggplot(aes(x=predictor,y=response))+
+  geom_point()+
+  geom_line(aes(y=pred,color='red'))
+
+preds2 %>% 
+  ggplot(aes(x=predictor,y=response))+
+  geom_point()+
+  geom_line(aes(y=pred,color='red'))
+
+# Overall para1 seems like the better model but it isn't trustworthy below .8 
