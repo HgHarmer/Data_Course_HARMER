@@ -1,0 +1,64 @@
+---
+title: "Untitled"
+output: 
+  html_document:
+    toc: true
+    toc_float: true 
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(easystats)
+library(MASS)
+library(GGally)
+library(modelr)
+```
+
+
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+names(mpg)
+m1 <- glm(data=mpg,hwy~manufacturer+ model+ displ+ year+ cyl+trans+ drv +cty +fl+ class)
+m2<- glm(data=mpg,hwy~year+cyl+trans+class+fl)
+m3<- glm(data=mpg,hwy~year*cyl+trans+class+fl+displ+manufacturer)
+m4<- glm(data=mpg,hwy~year+cyl+trans+class+displ)
+
+
+
+```
+
+## statistical modeling
+four models were tested and these are the results of a performance comparison
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+compare_performance(m1,m2,m3,m4)
+```
+
+```{r performance,echo=FALSE}
+compare_performance(m1,m2,m3,m4) %>% plot
+```
+
+model 1 seems to be the best model generated 
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+m1$formula
+```
+
+## visualization 
+```{r}
+dat <- add_predictions(mpg,m1)
+
+dat %>% ggplot(aes(y=hwy,x=displ))+
+  geom_point()+
+  geom_smooth(aes(y=pred))
+```
+```{r}
+
+```
+broom::
+tidy lets you turn models into data frames
+```{r}
+broom::tidy()
+```

@@ -1,0 +1,165 @@
+---
+title: "Assignment 9"
+output: 
+  html_document:
+    toc: true
+    toc_float: true 
+date: "`r Sys.Date()`"
+---
+<style>
+div.gray { background-color:#008080; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "gray">
+
+## Overview
+___
+The purpose of this assignment is to examine the GradSchool_Admissions data set.
+first I set up the packages I'll use and read in my data.
+```{r setup}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tidyverse)
+library(modelr)
+library(easystats)
+library(modelr)
+library(MASS)
+library(GGally)
+```
+
+```{r}
+grad <- read.csv('../../Data/GradSchool_Admissions.csv')
+```
+Then I take a quick look and the data I'm working with.
+
+```{r}
+head(grad)
+```
+The data is mostly tidy but columns admit, and rank are recorded as integers. admit should be recorded as either true or false and rank would be better as a character vector.
+
+```{r}
+grad <- grad %>% 
+  mutate(admit=as.logical(admit)) %>% 
+  mutate(rank=as.character(rank))
+head(grad)
+```
+Now admit is a lgl vector and rank is chr vector, much better.
+
+</div>
+
+<style>
+div.blue { background-color:#c72135; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+## Visualization 
+___
+Now I can start visualizing the data to get a better idea of what to look for. 
+```{r fig.height=7}
+ggpairs(grad)
+```
+Of the plots produced by ggpairs the admit vs rank in the bottom left corner stands out the most to me it looks like there might be a decent relationship between those two variables. 
+
+Here's a closer look at the data plotted in the bottom left
+
+```{r}
+grad %>% 
+  group_by(rank) %>% 
+  summarise(mean(admit))
+
+```
+
+It looks like the rank of the school you come from has a large impact on whether or not you'll be accepted into grad school.
+
+</div>
+
+<style>
+div.green { background-color:#e16033; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "green">
+
+## Modeling 
+___
+I started by making a fairly basic starting point model, followed by the most complex model possible. I then fed the complex model into stepAIC to find the best possible model
+```{r}
+m1<- glm(data = grad,
+         formula = admit~rank+gpa+rank+gre,
+         family = 'binomial')
+m2 <- glm(data = grad,
+          formula = admit~.^2,
+          family = 'binomial')
+best<- stepAIC(m2)
+
+m3 <- glm(data = grad,
+            formula = best$formula,
+            family = 'binomial')
+
+compare_performance(m1,m2,m3) %>% plot
+```
+As expected the stepAIC model out preformed the other two 
+
+lets test the models further 
+
+```{r}
+
+error_sq <- grad %>% 
+mutate(m1=predict(m1, grad, "response"),
+       m2=predict(m2, grad, "response"),
+       m3=predict(m3, grad, "response")) %>% 
+pivot_longer(c(m1,m2,m3),names_to = 'model',values_to = 'errorsq') %>%
+  mutate(errorsq=(admit-errorsq)^2)
+
+error_sq %>% 
+  ggplot(aes(x=model,y=errorsq,fill=model))+
+  geom_violin(alpha=.5)+
+  geom_point2()
+
+error_sq %>% 
+  group_by(model) %>% 
+  summarise(mean(errorsq))
+```
+All three models seem to have pretty similar levels of error
+
+
+Here is the equation for that model
+```{r}
+m3$formula
+```
+The formula isn't far off from my initial model 
+
+</div>
+
+<style>
+div.pink { background-color:#dba355; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "pink">
+
+
+
+## Predictions 
+___
+first I add the predictions to the grad data set
+```{r}
+grad <- grad %>% 
+mutate(pred=predict(m3, grad, "response"))
+```
+
+```{r}
+grad %>% 
+  ggplot(aes(x=gre,y=pred,color=rank))+
+  geom_point()+
+  geom_smooth(method = 'lm')
+
+grad %>% 
+  ggplot(aes(x=gpa,y=pred,color=rank))+
+  geom_point()+
+  geom_smooth(method = 'lm')
+```
+
+
+
+As predicted by ggpairs it seems like the main factor driving admittance rate is the rank of school that the student comes from, though GRE score and GPA do still impact a students chances of being accepted.
+
+</div>

@@ -10,8 +10,9 @@
 
 
 
+<meta name="date" content="2023-10-26" />
 
-<title>Assignment_9</title>
+<title>Rmarkdown</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -348,57 +349,45 @@ display: none;
 
 
 
+<h1 class="title toc-ignore">Rmarkdown</h1>
+<h4 class="date">2023-10-26</h4>
 
 </div>
 
 
-<div id="assignment-9" class="section level1">
-<h1><strong>Assignment 9</strong></h1>
-<p>In this assignment, you will use R (within R-Studio) to:</p>
-<ul>
-<li>Load and clean a real data set</li>
-<li>Conduct exploratory analyses, including informative figures</li>
-<li>Build and test appropriate models</li>
-<li>Draw conclusions about your data</li>
-<li>Combine all of the above into a well-documented R-Markdown report
-and export (knit) it into an HTML file</li>
-</ul>
-<p><strong>All file paths should be relative, starting from
-<em>your</em> Assignment_9 directory!!</strong></p>
-<p><strong>This means that you need to create a new R-Project named
-“Assignment_9.Rproj” in your Assignment_9 directory, and work from
-scripts within that.</strong></p>
-<div id="for-credit" class="section level2">
-<h2><strong>For credit…</strong></h2>
-<ol style="list-style-type: decimal">
-<li>Push a completed version of your Rproj and R-markdown file (details
-at end of this assignment) to GitHub</li>
-<li>Your score will also depend on your analyses and presentation of
-your final report</li>
-</ol>
-<hr />
+<div id="today-is-2023-10-26" class="section level1">
+<h1>today is 2023-10-26</h1>
+<p>ymal header needs to be that format</p>
+<p>ctrl+alt+I makes new code chunk</p>
+<pre class="r"><code>Sys.Date()</code></pre>
+<pre><code>## [1] &quot;2023-10-26&quot;</code></pre>
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+<p>this is <strong>bold</strong> this is <em>italic</em></p>
+<p>This is an R Markdown document. Markdown is a simple formatting
+syntax for authoring HTML, PDF, and MS Word documents. For more details
+on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
+<p>When you click the <strong>Knit</strong> button a document will be
+generated that includes both content as well as the output of any
+embedded R code chunks within the document. You can embed an R code
+chunk like this:</p>
+<pre class="r"><code>summary(cars)</code></pre>
+<pre><code>##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00</code></pre>
 </div>
+<div id="including-plots" class="section level2">
+<h2>Including Plots</h2>
+<p>You can also embed plots, for example:</p>
+<p><img src="data:image/png;base64,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" width="192" style="display: block; margin: auto;" /></p>
+<p>Note that the <code>echo = FALSE</code> parameter was added to the
+code chunk to prevent printing of the R code that generated the
+plot.</p>
 </div>
-<div id="your-tasks" class="section level1">
-<h1>Your tasks:</h1>
-<ul>
-<li>Use the data set “/Data/GradSchool_Admissions.csv”</li>
-<li>You will explore and model the predictors of graduate school
-admission
-<ul>
-<li>the “admit” column is coded as 1=success and 0=failure (that’s
-binary, so model appropriately)</li>
-<li>the other columns are the GRE score, the GPA, and the rank of the
-undergraduate institution, where I is “top-tier.”</li>
-</ul></li>
-<li>Document your data explorations, figures, and conclusions in a
-reproducible R-markdown report</li>
-<li>That means I want to see, in your html report, your process of model
-evaluation and selection. Here’s an <a href="https://gzahn.github.io/data-course/Repository/Assignments/Assignment_9/example.html" target="_blank">example</a></li>
-<li>Upload your <strong>self-contained</strong> R project, including
-knitted HTML report, to GitHub in <em>your</em> Assignment_9
-directory</li>
-</ul>
 </div>
 
 
