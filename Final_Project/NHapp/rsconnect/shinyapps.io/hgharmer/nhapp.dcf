@@ -1,0 +1,10 @@
+name: nhapp
+title:
+username: hgharmer
+account: hgharmer
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10466653
+bundleId: 7908100
+url: https://hgharmer.shinyapps.io/nhapp/
+version: 1

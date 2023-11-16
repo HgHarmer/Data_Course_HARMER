@@ -95,8 +95,6 @@ best<- stepAIC(m2)
 m3 <- glm(data = grad,
             formula = best$formula,
             family = 'binomial')
-
-compare_performance(m1,m2,m3) %>% plot
 ```
 As expected the stepAIC model out preformed the other two 
 

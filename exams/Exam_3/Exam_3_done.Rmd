@@ -1,0 +1,171 @@
+---
+output: 
+  html_document:
+    code_folding: show
+    df_print: paged
+    highlight: zenburn
+    
+---
+
+<style>
+.table-hover > tbody > tr:hover { 
+  background-color: #0080ff;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library(tidyverse)
+library(janitor)
+library(broom)
+library(knitr)
+library(kableExtra)
+library(plotly)
+```
+
+
+# <span style="color:black"> Exam 3 </span> {.tabset}
+
+
+
+## <span style="color:black"> Faculty Salaries </span> {.tabset}
+
+
+
+### <span style="color:black">  1. Clean and visualize faculty salaries </span> 
+
+
+
+Cleaning up the data : 
+
+The data needs to be split into 3 new data sets one for salary values, one for comp values, and one for the number of each position. 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+dat <- read.csv('./FacultySalaries_1995.csv')
+
+salary <- dat %>% select(FedID,UnivName,State,Tier,
+                         AvgFullProfSalary,AvgAssocProfSalary,AvgAssistProfSalary,AvgProfSalaryAll) %>%
+  pivot_longer(cols=-c(FedID,UnivName,Tier,State),
+               names_to = 'Rank',
+               values_to = 'salary') %>% 
+  mutate(Rank=str_remove(Rank,'Prof'),
+         Rank =str_remove(Rank,'Avg'),
+         Rank=str_remove(Rank,'Salary'))
+
+
+comp <- dat %>% select(FedID,UnivName,State,Tier,
+                       AvgFullProfComp,AvgAssocProfComp,AvgAssistProfComp,AvgProfCompAll) %>%
+  pivot_longer(cols=-c(FedID,UnivName,Tier,State),
+               names_to = 'Rank',
+               values_to = 'comp')%>% 
+  mutate(Rank=str_remove(Rank,'Prof'),
+         Rank =str_remove(Rank,'Avg'),
+         Rank=str_remove(Rank,'Comp'))
+
+
+num <- dat %>% select(FedID,UnivName,State,Tier,
+                      NumFullProfs,NumAssocProfs,NumFacultyAll,NumInstructors,NumAssistProfs) %>%
+  mutate(ProfAll=NumFullProfs+NumAssocProfs+NumAssistProfs) %>% 
+  pivot_longer(cols=-c(FedID,UnivName,Tier,State),
+               names_to = 'Rank',
+               values_to = 'num')%>% 
+  mutate(Rank=str_remove(Rank,'Prof'),
+         Rank=str_remove(Rank,'Num'),
+         Rank=if_else(str_ends(Rank,'s'),str_sub(Rank,end = -2L),Rank))
+  
+
+
+tidy <-salary %>% 
+  full_join(num) %>% 
+  full_join(comp)
+
+kable(head(tidy),format = 'html') %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+```
+Now that the data is tidy we can work on recreating the given graph
+
+```{r message=FALSE, warning=FALSE}
+tidy%>%
+  filter(Rank=='Assist'|Rank=='Assoc'|Rank=='Full') %>%
+  filter(Tier!='VIIB') %>% 
+  
+ ggplot(aes(y=salary,x=Rank,fill=Rank))+
+  facet_wrap(vars(Tier))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90,vjust = .5))
+
+
+
+```
+
+___
+
+### <span style="color:black"> 2.Build an ANOVA model for the data </span>
+
+```{r warning=FALSE}
+aovm <- aov(data = tidy,
+    salary~State+Tier+Rank) %>% 
+  tidy()
+
+
+kable(aovm,format = 'html') %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+```
+This anova model was testing the null hypothesis that State, Tier, and Position have no impact on salary. Based on the p values produced by this test(~2*10^16 for all variables) we can reject the null hypothesis for all three variables and conclude that state, tier, and rank all impact salary.
+
+
+
+## <span style="color:black"> Juniper Oils </span> {.tabset}
+
+
+
+### <span style="color:black"> 3. Tidy the juniper oils data </span>
+```{r warning=FALSE}
+ chemname<- c("alpha-pinene","para-cymene","alpha-terpineol","cedr-9-ene",
+             "alpha-cedrene","beta-cedrene","cis-thujopsene","alpha-himachalene",
+             "beta-chamigrene","cuparene","compound.1","alpha-chamigrene","widdrol",
+             "cedrol","beta-acorenol","alpha-acorenol","gamma-eudesmol","beta-eudesmol",
+             "alpha-eudesmol","cedr-8-en-13-ol","cedr-8-en-15-ol","compound.2",
+             "thujopsenal")
+chemname <- str_replace_all(chemname,'-','.')
+
+oils <- read.csv('./Juniper_Oils.csv') 
+
+t_oil <- oils %>% pivot_longer(cols = chemname,
+                      names_to = 'chemical_id',
+                      values_to ='concentration' )
+
+head(t_oil)
+```
+
+___
+
+### <span style="color:black"> 4. Plot concentrations over time for all chemicals </span>
+```{r message=FALSE, warning=FALSE}
+t_oil %>% 
+  ggplot(aes(y=concentration,x=YearsSinceBurn))+
+  geom_smooth()+
+  facet_wrap(vars(chemical_id),scales = 'free')
+
+```
+
+___
+
+### <span style="color:black"> 5.What chemicals are infuenced by time? </span>
+
+```{r warning=FALSE}
+oilm<- glm(data = t_oil,concentration~YearsSinceBurn*chemical_id)
+
+significant <- tidy(oilm) %>% 
+  filter(p.value<=0.05)%>% 
+  mutate(term=str_remove(term,'chemical_id'),term=str_remove(term,'YearsSinceBurn:'))
+
+kable(significant,format = 'html')%>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+  
+```
+This model found that the concentrations of the chemicals alpha.cedrene,cedr.8.en.13.o, cedrol, cis.thujopsene, widdrol, and cis.thujopsene are all significantly affected by time.
+
+___
