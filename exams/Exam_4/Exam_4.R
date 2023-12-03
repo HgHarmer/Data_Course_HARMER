@@ -6,12 +6,10 @@ dat <- read.csv("./cleaned_covid_data.csv")
 
 #IISubset the data set to just show states that begin with “A”#### 
 #and save this as an object called A_states####
-#new
-A_States<- dat %>% 
-  filter(substr(dat$Province_State,1,1)=='A')
 
-#old
-#A_States <- dat[grepl('^A',dat$Province_State),]
+
+
+A_States <- dat[grepl('^A',dat$Province_State),]
 
 
 #IIICreate a plot of that subset showing Deaths over time, ####
